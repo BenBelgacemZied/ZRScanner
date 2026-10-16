@@ -21,23 +21,21 @@ jobs:
         env:
           ANDROID_SIGNING_KEY_BASE64: ${{ secrets.ANDROID_SIGNING_KEY_BASE64 }}
           ANDROID_SIGNING_PASSWORD: ${{ secrets.ANDROID_SIGNING_PASSWORD }}
-          ANDROID_SIGNING_KEY_ALIAS: ${{ secrets.ANDROID_SIGNING_KEY_ALIAS }}
         run: |
-          if [ -n "$ANDROID_SIGNING_KEY_BASE64" ] && [ -n "$ANDROID_SIGNING_PASSWORD" ] && [ -n "$ANDROID_SIGNING_KEY_ALIAS" ]; then
+          if [ -n "$ANDROID_SIGNING_KEY_BASE64" ] && [ -n "$ANDROID_SIGNING_PASSWORD" ]; then
             echo "$ANDROID_SIGNING_KEY_BASE64" | base64 --decode > "$RUNNER_TEMP/zrscanner-signing-key.jks"
             echo "configuration=Release" >> "$GITHUB_OUTPUT"
             echo "Using the configured stable signing key."
-          elif [ -z "$ANDROID_SIGNING_KEY_BASE64" ] && [ -z "$ANDROID_SIGNING_PASSWORD" ] && [ -z "$ANDROID_SIGNING_KEY_ALIAS" ]; then
+          elif [ -z "$ANDROID_SIGNING_KEY_BASE64" ] && [ -z "$ANDROID_SIGNING_PASSWORD" ]; then
             echo "configuration=Debug" >> "$GITHUB_OUTPUT"
             echo "Stable signing secrets are not configured; creating a debug-signed test APK."
           else
-            echo "::error::Configure all three secrets together: ANDROID_SIGNING_KEY_BASE64, ANDROID_SIGNING_PASSWORD, ANDROID_SIGNING_KEY_ALIAS."
+            echo "::error::Configure both ANDROID_SIGNING_KEY_BASE64 and ANDROID_SIGNING_PASSWORD together."
             exit 1
           fi
       - name: Build Android APK
         env:
           ANDROID_SIGNING_PASSWORD: ${{ secrets.ANDROID_SIGNING_PASSWORD }}
-          ANDROID_SIGNING_KEY_ALIAS: ${{ secrets.ANDROID_SIGNING_KEY_ALIAS }}
           BUILD_CONFIGURATION: ${{ steps.signing.outputs.configuration }}
         run: |
           if [ "$BUILD_CONFIGURATION" = "Release" ]; then
@@ -45,7 +43,7 @@ jobs:
               -f net10.0-android -c Release -p:AndroidPackageFormats=apk \
               -p:AndroidKeyStore=true \
               -p:AndroidSigningKeyStore="$RUNNER_TEMP/zrscanner-signing-key.jks" \
-              -p:AndroidSigningKeyAlias="$ANDROID_SIGNING_KEY_ALIAS" \
+              -p:AndroidSigningKeyAlias=tcfconsult \
               -p:AndroidSigningKeyPass="$ANDROID_SIGNING_PASSWORD" \
               -p:AndroidSigningStorePass="$ANDROID_SIGNING_PASSWORD"
           else
