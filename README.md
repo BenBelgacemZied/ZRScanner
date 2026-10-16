@@ -19,12 +19,13 @@ Les fichiers restent locaux jusqu’à ce que l’utilisateur choisisse une appl
 
 ## Build Android
 
-Le workflow GitHub Actions compile un APK signé sur chaque push ou pull request vers `main`, puis publie l’APK comme artefact `ZRScanner-Android-APK` (14 jours).
+Le workflow GitHub Actions compile et publie un APK sur chaque push ou pull request vers `main` (artefact conservé 14 jours). Si les secrets de signature sont configurés, l’APK Release est signé avec la clé stable ; sinon, le workflow produit un APK Debug signé pour les tests.
 
-Configurer ces secrets dans le dépôt GitHub :
+Pour activer les builds Release signés, configurer ces secrets dans le dépôt GitHub :
 
-- `ANDROID_SIGNING_KEY_BASE64` : fichier JKS encodé en Base64.
+- `ANDROID_SIGNING_KEY_BASE64` : keystore JKS encodé en Base64.
 - `ANDROID_SIGNING_PASSWORD` : mot de passe du keystore et de la clé.
-- `ANDROID_SIGNING_KEY_ALIAS` : alias exact de la clé dans le JKS.
+
+L’alias du keystore utilisé par le workflow est `tcfconsult`.
 
 L’application utilise l’identifiant Android `com.benbelgacemzied.zrscanner`.
