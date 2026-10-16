@@ -6,5 +6,13 @@
   <path d="M49 43h14l-9 10h9M69 43h9v10h-9z" fill="none" stroke="#071B55" stroke-width="3.8" stroke-linecap="round" stroke-linejoin="round"/>
   <path d="M46 61h38" stroke="#00D9E8" stroke-width="5" stroke-linecap="round"/>
   <path d="M53 71h24" stroke="#B9CFDF" stroke-width="2.5" stroke-linecap="round"/>
-  <text x="64" y="103" text-anchor="middle" fill="#fff" font-family="Arial, sans-serif" font-size="16" font-weight="700" letter-spacing="1">Scanner</text>
+  <g fill="#fff">
+    <path d="M15 94h8q6 0 6 5t-6 5h-3v6h-5zm5 4v2h3q1 0 1-1t-1-1z"/>
+    <path d="M31 96h5v10h6v4H31z"/>
+    <path d="M44 96h5v14h-5z"/>
+    <path d="M53 96h5l4 7 4-7h5v14h-5v-6l-4 6-4-6v6h-5z"/>
+    <path d="M74 96h13v4h-8v1h7v4h-7v1h8v4H74z"/>
+    <path d="M90 96h5l6 7v-7h5v14h-5l-6-7v7h-5z"/>
+    <path d="M109 96h5v10h6v4h-11z"/>
+  </g>
 </svg>
