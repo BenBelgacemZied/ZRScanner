@@ -1,0 +1,28 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZRScanner.Domain", "src\ZRScanner.Domain\ZRScanner.Domain.csproj", "{5ACCB9A1-9C7E-4FA3-A902-4B3A03E71001}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZRScanner.Application", "src\ZRScanner.Application\ZRScanner.Application.csproj", "{5ACCB9A1-9C7E-4FA3-A902-4B3A03E71002}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZRScanner.Infrastructure", "src\ZRScanner.Infrastructure\ZRScanner.Infrastructure.csproj", "{5ACCB9A1-9C7E-4FA3-A902-4B3A03E71003}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZRScanner.Mobile", "src\ZRScanner.Mobile\ZRScanner.Mobile.csproj", "{5ACCB9A1-9C7E-4FA3-A902-4B3A03E71004}"
+EndProject
+Global
+ GlobalSection(SolutionConfigurationPlatforms) = preSolution
+  Debug|Any CPU = Debug|Any CPU
+  Release|Any CPU = Release|Any CPU
+ EndGlobalSection
+ GlobalSection(ProjectConfigurationPlatforms) = postSolution
+  {5ACCB9A1-9C7E-4FA3-A902-4B3A03E71001}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+  {5ACCB9A1-9C7E-4FA3-A902-4B3A03E71001}.Debug|Any CPU.Build.0 = Debug|Any CPU
+  {5ACCB9A1-9C7E-4FA3-A902-4B3A03E71001}.Release|Any CPU.ActiveCfg = Release|Any CPU
+  {5ACCB9A1-9C7E-4FA3-A902-4B3A03E71001}.Release|Any CPU.Build.0 = Release|Any CPU
+  {5ACCB9A1-9C7E-4FA3-A902-4B3A03E71002}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+  {5ACCB9A1-9C7E-4FA3-A902-4B3A03E71002}.Debug|Any CPU.Build.0 = Debug|Any CPU
+  {5ACCB9A1-9C7E-4FA3-A902-4B3A03E71002}.Release|Any CPU.ActiveCfg = Release|Any CPU
+  {5ACCB9A1-9C7E-4FA3-A902-4B3A03E71002}.Release|Any CPU.Build.0 = Release|Any CPU
+ EndGlobalSection
+EndGlobal
