@@ -14,7 +14,7 @@
     <SupportedOSPlatformVersion>24.0</SupportedOSPlatformVersion>
   </PropertyGroup>
   <ItemGroup>
-    <MauiIcon Include="Resources/AppIcon/appicon.svg" ForegroundFile="Resources/AppIcon/appicon-foreground.svg" Color="#082F78" />
+    <MauiIcon Include="Resources/AppIcon/appicon.svg" ForegroundFile="Resources/AppIcon/appicon-foreground.svg" Color="#071B55" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="../ZRScanner.Application/ZRScanner.Application.csproj" />
