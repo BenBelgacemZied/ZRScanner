@@ -1,0 +1,48 @@
+name: Android build
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+      - name: Install MAUI Android workload
+        run: dotnet workload install maui-android
+      - name: Configure stable Android signing
+        env:
+          ANDROID_SIGNING_KEY_BASE64: ${{ secrets.ANDROID_SIGNING_KEY_BASE64 }}
+          ANDROID_SIGNING_PASSWORD: ${{ secrets.ANDROID_SIGNING_PASSWORD }}
+          ANDROID_SIGNING_KEY_ALIAS: ${{ secrets.ANDROID_SIGNING_KEY_ALIAS }}
+        run: |
+          if [ -z "$ANDROID_SIGNING_KEY_BASE64" ] || [ -z "$ANDROID_SIGNING_PASSWORD" ] || [ -z "$ANDROID_SIGNING_KEY_ALIAS" ]; then
+            echo "::error::Add ANDROID_SIGNING_KEY_BASE64, ANDROID_SIGNING_PASSWORD, and ANDROID_SIGNING_KEY_ALIAS repository secrets before building."
+            exit 1
+          fi
+          echo "$ANDROID_SIGNING_KEY_BASE64" | base64 --decode > "$RUNNER_TEMP/zrscanner-signing-key.jks"
+      - name: Build Android APK
+        env:
+          ANDROID_SIGNING_PASSWORD: ${{ secrets.ANDROID_SIGNING_PASSWORD }}
+          ANDROID_SIGNING_KEY_ALIAS: ${{ secrets.ANDROID_SIGNING_KEY_ALIAS }}
+        run: >
+          dotnet publish src/ZRScanner.Mobile/ZRScanner.Mobile.csproj
+          -f net10.0-android -c Release -p:AndroidPackageFormats=apk
+          -p:AndroidKeyStore=true
+          -p:AndroidSigningKeyStore="$RUNNER_TEMP/zrscanner-signing-key.jks"
+          -p:AndroidSigningKeyAlias="$ANDROID_SIGNING_KEY_ALIAS"
+          -p:AndroidSigningKeyPass="$ANDROID_SIGNING_PASSWORD"
+          -p:AndroidSigningStorePass="$ANDROID_SIGNING_PASSWORD"
+      - name: Upload signed APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ZRScanner-Android-APK
+          path: src/ZRScanner.Mobile/bin/Release/net10.0-android/publish/*-Signed.apk
+          if-no-files-found: error
+          retention-days: 14
