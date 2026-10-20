@@ -279,6 +279,16 @@ public sealed class MainPage : ContentPage
             };
             shareButton.Clicked += async (_, _) => await SharePdfAsync(doc);
 
+            var deleteButton = new Button
+            {
+                Text = "Supprimer le PDF",
+                HeightRequest = 44,
+                BackgroundColor = Color.FromArgb("#FCE8E6"),
+                TextColor = Color.FromArgb("#B3261E"),
+                CornerRadius = 10
+            };
+            deleteButton.Clicked += async (_, _) => await DeletePdfAsync(doc);
+
             _items.Children.Add(new Border
             {
                 Padding = 14,
@@ -304,9 +314,34 @@ public sealed class MainPage : ContentPage
                         },
                         openButton,
                         shareButton
+                        deleteButton
                     }
                 }
             });
+        }
+    }
+
+    private async Task DeletePdfAsync(ZRScanner.Domain.Document document)
+    {
+        var confirmed = await DisplayAlert(
+            "Supprimer le PDF ?",
+            $"« {document.FileName} » sera supprimé définitivement de cet appareil.",
+            "Supprimer",
+            "Annuler");
+        if (!confirmed) return;
+
+        try
+        {
+            if (await _storage.DeleteAsync(document))
+                _status.Text = $"PDF supprimé : {document.FileName}";
+            else
+                _status.Text = "Ce PDF n’existe déjà plus dans la liste.";
+
+            await RefreshAsync();
+        }
+        catch (Exception ex)
+        {
+            _status.Text = $"Impossible de supprimer le PDF : {ex.Message}";
         }
     }
 
