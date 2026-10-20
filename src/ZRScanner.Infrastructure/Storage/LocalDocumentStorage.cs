@@ -42,6 +42,34 @@ public sealed class LocalDocumentStorage(string rootPath) : IDocumentStorage
         return Task.FromResult<Stream?>(!string.IsNullOrEmpty(path) && File.Exists(path) ? File.OpenRead(path) : null);
     }
 
+    public async Task<bool> DeleteAsync(Document document, CancellationToken cancellationToken = default)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+        if (!File.Exists(IndexPath)) return false;
+
+        var documents = (await ReadIndexAsync(cancellationToken)).ToList();
+        var indexedDocument = documents.FirstOrDefault(item => item.Id == document.Id);
+        if (indexedDocument is null) return false;
+
+        var safeKey = Path.GetFileName(indexedDocument.StorageKey);
+        var path = string.IsNullOrWhiteSpace(safeKey) ? string.Empty : Path.Combine(_root, safeKey);
+        if (string.IsNullOrWhiteSpace(safeKey))
+        {
+            // Backward compatibility for documents saved before StorageKey was added to the index.
+            var safeName = Path.GetFileName(indexedDocument.FileName);
+            path = Directory.Exists(_root)
+                ? Directory.GetFiles(_root, $"*-{safeName}").FirstOrDefault() ?? string.Empty
+                : string.Empty;
+        }
+
+        cancellationToken.ThrowIfCancellationRequested();
+        if (!string.IsNullOrEmpty(path) && File.Exists(path)) File.Delete(path);
+
+        documents.Remove(indexedDocument);
+        await File.WriteAllTextAsync(IndexPath, JsonSerializer.Serialize(documents), cancellationToken);
+        return true;
+    }
+
     private async Task<IReadOnlyList<Document>> ReadIndexAsync(CancellationToken cancellationToken)
     {
         if (!File.Exists(IndexPath)) return [];
