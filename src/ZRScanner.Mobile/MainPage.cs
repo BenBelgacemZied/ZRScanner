@@ -193,7 +193,8 @@ public sealed class MainPage : ContentPage
         _scanButton.Text = "＋  " + T("scan_button");
         _documentsTitle.Text = T("my_documents");
         _localNote.Text = T("saved_on_device");
-        ((Label)_emptyState.Content).Text = T("empty_state");
+        if (_emptyState.Content is Label emptyLabel)
+            emptyLabel.Text = T("empty_state");
         _status.Text = _statusMessageKey is null ? T("ready") : T(_statusMessageKey);
     }
 
@@ -401,7 +402,7 @@ public sealed class MainPage : ContentPage
 
     private async Task DeletePdfAsync(ZRScanner.Domain.Document document)
     {
-        var confirmed = await DisplayAlert(
+        var confirmed = await DisplayAlertAsync(
             T("delete_title"),
             string.Format(CultureInfo.GetCultureInfo(_language), T("delete_confirm"), document.FileName),
             T("delete_pdf"),
