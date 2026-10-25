@@ -153,44 +153,7 @@ public sealed class MainPage : ContentPage
         };
 
         ApplyLanguage();
-        Loaded += async (_, _) =>
-        {
-            if (!Preferences.Default.ContainsKey(LanguagePreferenceKey))
-                await ChooseLanguageOnFirstLaunchAsync();
-
-            await RefreshAsync();
-        };
-    }
-
-    private async Task ChooseLanguageOnFirstLaunchAsync()
-    {
-        string? selection;
-        do
-        {
-            selection = await DisplayActionSheet(
-                T("choose_language"),
-                T("cancel"),
-                null,
-                "Français",
-                "Nederlands",
-                "English");
-        }
-        while (selection is not ("Français" or "Nederlands" or "English"));
-
-        _language = selection switch
-        {
-            "Nederlands" => "nl",
-            "English" => "en",
-            _ => "fr"
-        };
-        Preferences.Default.Set(LanguagePreferenceKey, _language);
-
-        _suppressLanguagePickerEvent = true;
-        _languagePicker.SelectedIndex = _language switch { "nl" => 1, "en" => 2, _ => 0 };
-        _suppressLanguagePickerEvent = false;
-
-        _statusMessageKey = null;
-        ApplyLanguage();
+        Loaded += async (_, _) => await RefreshAsync();
     }
 
     private static string GetInitialLanguage()
@@ -203,6 +166,21 @@ public sealed class MainPage : ContentPage
     }
 
     private string T(string key) => AppText.Get(_language, key);
+
+    public async Task SetLanguageAsync(string language)
+    {
+        if (language is not ("fr" or "nl" or "en"))
+            throw new ArgumentOutOfRangeException(nameof(language));
+
+        _language = language;
+        Preferences.Default.Set(LanguagePreferenceKey, language);
+        _suppressLanguagePickerEvent = true;
+        _languagePicker.SelectedIndex = language switch { "nl" => 1, "en" => 2, _ => 0 };
+        _suppressLanguagePickerEvent = false;
+        _statusMessageKey = null;
+        ApplyLanguage();
+        await RefreshAsync();
+    }
 
     private void ApplyLanguage()
     {
