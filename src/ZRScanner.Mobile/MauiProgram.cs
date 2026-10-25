@@ -16,6 +16,7 @@ public static class MauiProgram
         builder.Services.AddSingleton<ZRScanner.Application.Ports.IDocumentStorage>(_ => new LocalDocumentStorage(FileSystem.AppDataDirectory));
         builder.Services.AddTransient<ScanAndSaveDocument>();
         builder.Services.AddSingleton<MainPage>();
+        builder.Services.AddTransient<StartupPage>();
         return builder.Build();
     }
 }
