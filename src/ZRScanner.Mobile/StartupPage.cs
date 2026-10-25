@@ -177,7 +177,6 @@ public sealed class StartupPage : ContentPage
             BorderColor = Color.FromArgb("#DDE5E0"),
             BackgroundColor = Colors.White,
             TextColor = Color.FromArgb("#17372E"),
-            HorizontalTextAlignment = TextAlignment.Start,
             Padding = new Thickness(18, 0)
         };
         button.Clicked += (_, _) => SelectLanguage(language);
