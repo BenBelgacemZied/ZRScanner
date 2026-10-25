@@ -96,6 +96,8 @@ public sealed class MainPage : ContentPage
 
         Title = "ZRScanner";
         BackgroundColor = Color.FromArgb("#F5F7F5");
+        Grid.SetColumn(_languagePicker, 1);
+        Grid.SetColumn(_localNote, 1);
         Content = new ScrollView
         {
             Content = new VerticalStackLayout
@@ -139,13 +141,14 @@ public sealed class MainPage : ContentPage
             }
         };
 
-        _languagePicker.SelectedIndexChanged += (_, _) =>
+        _languagePicker.SelectedIndexChanged += async (_, _) =>
         {
             if (_languagePicker.SelectedIndex < 0) return;
             _language = _languagePicker.SelectedIndex switch { 1 => "nl", 2 => "en", _ => "fr" };
             Preferences.Default.Set(LanguagePreferenceKey, _language);
             _statusMessageKey = null;
             ApplyLanguage();
+            await RefreshAsync();
         };
 
         ApplyLanguage();
