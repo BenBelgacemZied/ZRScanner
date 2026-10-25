@@ -4,6 +4,9 @@ internal static class AppText
 {
     public static string Get(string language, string key) => (language, key) switch
     {
+        ("fr", "choose_language") => "Choisissez votre langue",
+        ("nl", "choose_language") => "Kies uw taal",
+        ("en", "choose_language") => "Choose your language",
         ("fr", "language") => "Langue",
         ("nl", "language") => "Taal",
         ("en", "language") => "Language",
