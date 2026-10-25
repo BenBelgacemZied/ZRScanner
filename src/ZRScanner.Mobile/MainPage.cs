@@ -26,6 +26,7 @@ public sealed class MainPage : ContentPage
     private readonly Button _scanButton;
     private string _language;
     private string? _statusMessageKey;
+    private bool _suppressLanguagePickerEvent;
 
     public MainPage(ScanAndSaveDocument scan, IDocumentStorage storage)
     {
@@ -143,7 +144,7 @@ public sealed class MainPage : ContentPage
 
         _languagePicker.SelectedIndexChanged += async (_, _) =>
         {
-            if (_languagePicker.SelectedIndex < 0) return;
+            if (_suppressLanguagePickerEvent || _languagePicker.SelectedIndex < 0) return;
             _language = _languagePicker.SelectedIndex switch { 1 => "nl", 2 => "en", _ => "fr" };
             Preferences.Default.Set(LanguagePreferenceKey, _language);
             _statusMessageKey = null;
@@ -152,7 +153,44 @@ public sealed class MainPage : ContentPage
         };
 
         ApplyLanguage();
-        Loaded += async (_, _) => await RefreshAsync();
+        Loaded += async (_, _) =>
+        {
+            if (!Preferences.Default.ContainsKey(LanguagePreferenceKey))
+                await ChooseLanguageOnFirstLaunchAsync();
+
+            await RefreshAsync();
+        };
+    }
+
+    private async Task ChooseLanguageOnFirstLaunchAsync()
+    {
+        string? selection;
+        do
+        {
+            selection = await DisplayActionSheet(
+                T("choose_language"),
+                T("cancel"),
+                null,
+                "Français",
+                "Nederlands",
+                "English");
+        }
+        while (selection is not ("Français" or "Nederlands" or "English"));
+
+        _language = selection switch
+        {
+            "Nederlands" => "nl",
+            "English" => "en",
+            _ => "fr"
+        };
+        Preferences.Default.Set(LanguagePreferenceKey, _language);
+
+        _suppressLanguagePickerEvent = true;
+        _languagePicker.SelectedIndex = _language switch { "nl" => 1, "en" => 2, _ => 0 };
+        _suppressLanguagePickerEvent = false;
+
+        _statusMessageKey = null;
+        ApplyLanguage();
     }
 
     private static string GetInitialLanguage()
